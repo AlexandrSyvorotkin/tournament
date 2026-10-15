@@ -13,15 +13,24 @@ export function getRosterSize(mode: TournamentMode) {
 
 export function parsePlayerNames(value: string) {
   return value
-    .split(/\n|,/)
+    .split(',')
     .map((name) => name.trim())
     .filter(Boolean)
 }
 
+function isContactPhone(value: string) {
+  if (!/^[+\d\s()-]+$/.test(value)) return false
+  const digits = value.replace(/\D/g, '')
+  return (
+    digits.length === 10 ||
+    (digits.length === 11 && (digits.startsWith('7') || digits.startsWith('8')))
+  )
+}
+
 function rosterError(size: number) {
-  if (size === 1) return 'Укажите имя участника'
-  if (size === 2) return 'Укажите 2 имени участников, каждое с новой строки'
-  return `Укажите ${size} имён участников, каждое с новой строки`
+  if (size === 1) return 'Укажите одно имя без запятой'
+  if (size === 2) return 'Укажите 2 имени участников через запятую'
+  return `Укажите ${size} имён участников через запятую`
 }
 
 export function createRegistrationSchema(mode: TournamentMode) {
@@ -36,7 +45,11 @@ export function createRegistrationSchema(mode: TournamentMode) {
     players: z
       .string()
       .trim()
-      .min(1, 'Укажите имена участников')
+      .min(1, size === 1 ? 'Укажите имя участника' : 'Укажите имена участников')
+      .refine(
+        (value) => size !== 1 || !value.includes(','),
+        'Укажите одно имя без запятой',
+      )
       .refine(
         (value) => parsePlayerNames(value).length === size,
         rosterError(size),
@@ -45,6 +58,11 @@ export function createRegistrationSchema(mode: TournamentMode) {
         (value) => parsePlayerNames(value).every((name) => name.length >= 2),
         'Имя участника должно быть не короче 2 символов',
       ),
+    phone: z
+      .string()
+      .trim()
+      .min(1, 'Укажите номер телефона для связи')
+      .refine(isContactPhone, 'Укажите корректный номер телефона'),
     paid: z
       .boolean()
       .refine((value) => value, 'Подтвердите, что участие платное'),
@@ -56,13 +74,14 @@ export type RegistrationFormValues = z.infer<
 >
 
 const registrationSheetUrl =
-  'https://script.google.com/macros/s/AKfycbxR52Zs5zXImpa-ctqjs7tTSQHktXUBON3jtgpZUxYs9DC_iFn--QB3ufI9TNQp_vHK/exec'
+  'https://script.google.com/macros/s/AKfycbzRke4ykVWbpN6JvZngrzOyFroPCrij61a01D-2o0OyPGI6zZZ_sUkfxrCIaw1E_gMO/exec'
 
 export async function sendRegistration(entry: {
   tournament: string
   mode: string
   teamName: string
   players: string
+  phone: string
   paid: boolean
 }) {
   await fetch(registrationSheetUrl, {

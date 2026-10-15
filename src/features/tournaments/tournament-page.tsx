@@ -1,8 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { ChevronLeft } from 'lucide-react'
 import { getTournamentById } from '@/features/tournaments/model/tournaments'
-import { TournamentHero } from './ui/tournament-hero'
+// import { TournamentHero } from './ui/tournament-hero'
 import { TournamentOverview } from './ui/tournament-overview'
+import banner from '@/shared/assets/logo2.png'
+
+const Banner = () => {
+  return (
+    <img src={banner} alt="Киберклуб" className="h-auto w-full" />
+  )
+}
 
 export function TournamentPage({ tournamentId }: { tournamentId: string }) {
   const tournament = getTournamentById(tournamentId)
@@ -20,7 +27,7 @@ export function TournamentPage({ tournamentId }: { tournamentId: string }) {
 
         {tournament ? (
           <>
-            <TournamentHero tournament={tournament} />
+            <Banner/>
             <TournamentOverview key={tournament.id} tournament={tournament} />
           </>
         ) : (

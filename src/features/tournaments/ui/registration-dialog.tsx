@@ -39,6 +39,7 @@ export function RegistrationDialog({
     defaultValues: {
       teamName: '',
       players: '',
+      phone: '',
       paid: false,
     },
   })
@@ -57,6 +58,7 @@ export function RegistrationDialog({
         mode: tournament.mode,
         teamName: values.teamName,
         players: values.players,
+        phone: values.phone,
         paid: values.paid,
       })
       onRegistered()
@@ -110,22 +112,51 @@ export function RegistrationDialog({
             </Field>
 
             <Field
-              label="Имена участников"
+              label={rosterSize === 1 ? 'Имя участника' : 'Имена участников'}
               hint={rosterHint(rosterSize)}
               error={errors.players?.message}
               htmlFor="registration-players"
             >
-              <textarea
-                id="registration-players"
-                rows={Math.max(rosterSize, 2)}
-                autoComplete="off"
-                placeholder={rosterPlaceholder(rosterSize)}
-                aria-invalid={errors.players ? true : undefined}
-                className={cn(
-                  inputClassName(Boolean(errors.players)),
-                  'resize-none py-2.5',
-                )}
-                {...register('players')}
+              {rosterSize === 1 ? (
+                <input
+                  id="registration-players"
+                  type="text"
+                  autoComplete="off"
+                  placeholder={rosterPlaceholder(rosterSize)}
+                  aria-invalid={errors.players ? true : undefined}
+                  className={cn(inputClassName(Boolean(errors.players)), 'h-11')}
+                  {...register('players')}
+                />
+              ) : (
+                <textarea
+                  id="registration-players"
+                  rows={2}
+                  autoComplete="off"
+                  placeholder={rosterPlaceholder(rosterSize)}
+                  aria-invalid={errors.players ? true : undefined}
+                  className={cn(
+                    inputClassName(Boolean(errors.players)),
+                    'resize-none py-2.5',
+                  )}
+                  {...register('players')}
+                />
+              )}
+            </Field>
+
+            <Field
+              label="Номер телефона для связи"
+              error={errors.phone?.message}
+              htmlFor="registration-phone"
+            >
+              <input
+                id="registration-phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="+7 900 000-00-00"
+                aria-invalid={errors.phone ? true : undefined}
+                className={cn(inputClassName(Boolean(errors.phone)), 'h-11')}
+                {...register('phone')}
               />
             </Field>
 
@@ -200,13 +231,13 @@ function inputClassName(invalid: boolean) {
 }
 
 function rosterHint(size: number) {
-  if (size === 1) return 'Одно имя'
-  if (size === 2) return 'Два имени, каждое с новой строки'
-  return 'Пять имён, каждое с новой строки'
+  if (size === 1) return 'Одно имя, без запятой'
+  return 'Перечислите имена через запятую'
 }
 
 function rosterPlaceholder(size: number) {
+  if (size === 1) return 'Иван'
   return Array.from({ length: size }, (_, index) => `Участник ${index + 1}`).join(
-    '\n',
+    ', ',
   )
 }
