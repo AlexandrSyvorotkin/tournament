@@ -81,6 +81,20 @@ export function RegistrationDialog({
               <Dialog.Description className="mt-1 text-sm text-zinc-400">
                 {tournament.name} · {tournament.mode}
               </Dialog.Description>
+              {tournament.discipline === 'CS' ? (
+                <p className="mt-3 text-sm leading-5 text-zinc-300">
+                  Перед подтверждением участия зарегистрируйте команду на{' '}
+                  <a
+                    href="https://cs2.fastcup.net/teams"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#e24a1b] underline underline-offset-2 hover:text-[#f25a28]"
+                  >
+                    fastcup
+                  </a>
+                  .
+                </p>
+              ) : null}
             </div>
             <Dialog.Close
               aria-label="Закрыть"
@@ -104,7 +118,11 @@ export function RegistrationDialog({
                 id="registration-team"
                 type="text"
                 autoComplete="off"
-                placeholder="Например, Night Shift"
+                placeholder={
+                  tournament.discipline === 'CS'
+                    ? 'Название как на сайте fastcup'
+                    : 'Например, Night Shift'
+                }
                 aria-invalid={errors.teamName ? true : undefined}
                 className={cn(inputClassName(Boolean(errors.teamName)), 'h-11')}
                 {...register('teamName')}
