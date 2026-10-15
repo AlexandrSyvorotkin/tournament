@@ -1,36 +1,32 @@
 import { useState } from 'react'
-import { Plus } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 import {
+  disciplines,
   modes,
-  regions,
   statusTabs,
+  type TournamentDiscipline,
   type TournamentMode,
   type TournamentStatus,
 } from '@/features/tournaments/model/tournaments'
 import { FilterSelect } from './filter-select'
 
-type OpenFilter = 'region' | 'mode' | null
+type OpenFilter = 'discipline' | 'mode' | null
 
 export function TournamentsSidebar({
   status,
   mode,
-  region,
-  premiumOnly,
+  discipline,
   onStatusChange,
   onModeChange,
-  onRegionChange,
-  onPremiumChange,
+  onDisciplineChange,
   onReset,
 }: {
   status: TournamentStatus
   mode: TournamentMode | null
-  region: string | null
-  premiumOnly: boolean
+  discipline: TournamentDiscipline | null
   onStatusChange: (status: TournamentStatus) => void
   onModeChange: (mode: TournamentMode) => void
-  onRegionChange: (region: string) => void
-  onPremiumChange: (premiumOnly: boolean) => void
+  onDisciplineChange: (discipline: TournamentDiscipline) => void
   onReset: () => void
 }) {
   const [openFilter, setOpenFilter] = useState<OpenFilter>(null)
@@ -41,23 +37,15 @@ export function TournamentsSidebar({
   }
 
   return (
-    <aside className="sticky top-4 flex w-[232px] shrink-0 flex-col gap-3 self-start">
-      <button
-        type="button"
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#e24a1b] text-sm font-semibold tracking-wide uppercase transition-colors hover:bg-[#f25a28]"
-      >
-        <Plus className="size-4" />
-        Создать турнир
-      </button>
-
-      <div className="overflow-hidden rounded-lg bg-[#171a22]">
+    <aside className="flex w-full shrink-0 flex-col gap-3 lg:sticky lg:top-4 lg:w-[232px] lg:self-start">
+      <div className="flex overflow-hidden rounded-lg bg-[#171a22] lg:flex-col">
         {statusTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => onStatusChange(tab.id)}
             className={cn(
-              'block w-full px-4 py-3 text-left text-sm transition-colors',
+              'flex-1 px-3 py-3 text-center text-sm transition-colors lg:w-full lg:px-4 lg:text-left',
               status === tab.id
                 ? 'bg-[#2a3142] font-medium'
                 : 'text-zinc-300 hover:bg-white/5',
@@ -68,54 +56,38 @@ export function TournamentsSidebar({
         ))}
       </div>
 
-      <div className="mt-2 px-1 text-sm text-zinc-400">Фильтры</div>
+      <div className="mt-1 px-1 text-sm text-zinc-400 lg:mt-2">Фильтры</div>
 
-      <FilterSelect
-        label="Регионы"
-        value={region}
-        open={openFilter === 'region'}
-        onToggle={() =>
-          setOpenFilter((current) => (current === 'region' ? null : 'region'))
-        }
-        options={regions.map((item) => ({ id: item, label: item }))}
-        onSelect={(value) => {
-          onRegionChange(value)
-          setOpenFilter(null)
-        }}
-      />
-      <FilterSelect
-        label="Режимы"
-        value={mode}
-        open={openFilter === 'mode'}
-        onToggle={() =>
-          setOpenFilter((current) => (current === 'mode' ? null : 'mode'))
-        }
-        options={modes.map((item) => ({ id: item, label: item }))}
-        onSelect={(value) => {
-          onModeChange(value as TournamentMode)
-          setOpenFilter(null)
-        }}
-      />
-
-      <button
-        type="button"
-        role="checkbox"
-        aria-checked={premiumOnly}
-        onClick={() => onPremiumChange(!premiumOnly)}
-        className="flex items-center gap-3 rounded-lg bg-[#171a22] px-4 py-3 text-left text-sm"
-      >
-        <span
-          className={cn(
-            'grid size-4 place-items-center rounded-[3px] border',
-            premiumOnly ? 'border-[#e24a1b] bg-[#e24a1b]' : 'border-zinc-500',
-          )}
-        >
-          {premiumOnly ? (
-            <span className="size-2 rounded-[1px] bg-white" />
-          ) : null}
-        </span>
-        Premium
-      </button>
+      <div className="relative z-10 grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-3">
+        <FilterSelect
+          label="Дисциплины"
+          value={discipline}
+          open={openFilter === 'discipline'}
+          onToggle={() =>
+            setOpenFilter((current) =>
+              current === 'discipline' ? null : 'discipline',
+            )
+          }
+          options={disciplines.map((item) => ({ id: item, label: item }))}
+          onSelect={(value) => {
+            onDisciplineChange(value as TournamentDiscipline)
+            setOpenFilter(null)
+          }}
+        />
+        <FilterSelect
+          label="Режимы"
+          value={mode}
+          open={openFilter === 'mode'}
+          onToggle={() =>
+            setOpenFilter((current) => (current === 'mode' ? null : 'mode'))
+          }
+          options={modes.map((item) => ({ id: item, label: item }))}
+          onSelect={(value) => {
+            onModeChange(value as TournamentMode)
+            setOpenFilter(null)
+          }}
+        />
+      </div>
 
       <button
         type="button"

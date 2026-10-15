@@ -1,62 +1,58 @@
 import type { ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
+import csImage from '@/shared/assets/csgo.jpeg'
+import dotaImage from '@/shared/assets/dot.jpeg'
+import fifaImage from '@/shared/assets/фиф.jpg'
+import valorantImage from '@/shared/assets/val.jpeg'
 import { cn } from '@/shared/lib/utils'
-import type { Tournament } from '@/features/tournaments/model/tournaments'
-import { RegionFlag } from './region-flag'
+import type {
+  Tournament,
+  TournamentDiscipline,
+} from '@/features/tournaments/model/tournaments'
+
+const disciplineImage: Record<TournamentDiscipline, string> = {
+  CS: csImage,
+  Дота: dotaImage,
+  FIFA: fifaImage,
+  Valorant: valorantImage,
+}
 
 export function TournamentCard({ tournament }: { tournament: Tournament }) {
   return (
     <Link
       to="/tournaments/$tournamentId"
       params={{ tournamentId: tournament.id }}
-      className={cn(
-        'relative flex items-center gap-4 overflow-hidden rounded-xl bg-[#171a22] px-4 py-3 transition-colors hover:bg-[#1e222d]',
-        tournament.premium && 'pl-8',
-      )}
+      className="relative flex flex-col gap-3 overflow-hidden rounded-xl bg-[#171a22] px-4 py-3 transition-colors hover:bg-[#1e222d] lg:flex-row lg:items-center lg:gap-4"
     >
-      {tournament.premium ? (
-        <span className="absolute inset-y-0 left-0 flex w-6 items-center justify-center bg-[#e24a1b] text-[9px] font-bold tracking-[0.18em] text-white [writing-mode:vertical-rl] rotate-180">
-          PREMIUM
-        </span>
-      ) : null}
-
-      <div
-        className={cn(
-          'grid size-14 shrink-0 place-items-center rounded-md text-center text-[10px] leading-tight font-black whitespace-pre-line',
-          tournament.markClass,
-        )}
-      >
-        {tournament.mark}
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-[15px] font-semibold">{tournament.name}</div>
-        <div className="text-xs tracking-wide text-zinc-500">
-          {tournament.organizer}
+      <div className="flex min-w-0 items-center gap-3 lg:contents">
+        <img
+          src={disciplineImage[tournament.discipline]}
+          alt={tournament.discipline}
+          className="h-14 w-10 shrink-0 rounded-md object-cover"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-[15px] font-semibold">{tournament.name}</div>
         </div>
+        <ChevronRight className="size-5 shrink-0 text-zinc-500 lg:hidden" />
       </div>
 
-      <Meta label="Начало" className="w-[132px]">
-        {tournament.start}
-      </Meta>
-      <Meta label="Режим" className="w-14">
-        {tournament.mode}
-      </Meta>
-      <Meta label="Регионы" className="w-20">
-        <span className="inline-flex items-center gap-1.5">
-          <RegionFlag region={tournament.region} />
-          <span>+ {tournament.regionExtra}</span>
-        </span>
-      </Meta>
-      <Meta label="Участники" className="w-24">
-        {tournament.players} / {tournament.capacity}
-      </Meta>
-      <Meta label="Призовой фонд" className="w-32">
-        {tournament.prize}
-      </Meta>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2 lg:contents">
+        <Meta label="Начало" className="lg:w-[132px]">
+          {tournament.start}
+        </Meta>
+        <Meta label="Режим" className="lg:w-14">
+          {tournament.mode}
+        </Meta>
+        <Meta label="Дисциплина" className="lg:w-24">
+          {tournament.discipline}
+        </Meta>
+        <Meta label="Призовой фонд" className="lg:w-32">
+          {tournament.prize}
+        </Meta>
+      </div>
 
-      <ChevronRight className="size-5 shrink-0 text-zinc-500" />
+      <ChevronRight className="hidden size-5 shrink-0 text-zinc-500 lg:block" />
     </Link>
   )
 }
