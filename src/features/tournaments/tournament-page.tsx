@@ -22,11 +22,11 @@ export function TournamentPage({ tournamentId }: { tournamentId: string }) {
   }, [tournament])
 
   return (
-    <div className="min-h-svh bg-[#0c0e13] text-white">
+    <div className="min-h-svh">
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4 px-3 py-4 sm:px-4 sm:py-6">
         <Link
           to="/"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"
+          className="inline-flex w-fit items-center gap-1.5 rounded-lg bg-[#101218] px-3 py-2 text-sm text-zinc-100 shadow-[0_8px_24px_rgba(0,0,0,0.45)] ring-1 ring-white/10 transition-colors hover:bg-[#171a22]"
         >
           <ChevronLeft className="size-4" />
           К турнирам

@@ -6,7 +6,7 @@ import {
   statusTabs,
   type TournamentDiscipline,
   type TournamentMode,
-  type TournamentStatus,
+  type TournamentListFilter,
 } from '@/features/tournaments/model/tournaments'
 import { FilterSelect } from './filter-select'
 
@@ -21,10 +21,10 @@ export function TournamentsSidebar({
   onDisciplineChange,
   onReset,
 }: {
-  status: TournamentStatus
+  status: TournamentListFilter
   mode: TournamentMode | null
   discipline: TournamentDiscipline | null
-  onStatusChange: (status: TournamentStatus) => void
+  onStatusChange: (status: TournamentListFilter) => void
   onModeChange: (mode: TournamentMode) => void
   onDisciplineChange: (discipline: TournamentDiscipline) => void
   onReset: () => void
@@ -37,7 +37,7 @@ export function TournamentsSidebar({
   }
 
   return (
-    <aside className="flex w-full shrink-0 flex-col gap-3 lg:sticky lg:top-4 lg:w-[232px] lg:self-start">
+    <aside className="flex w-full shrink-0 flex-col gap-3 rounded-xl bg-[#101218] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.55)] ring-1 ring-white/10 lg:sticky lg:top-4 lg:w-[232px] lg:self-start">
       <div className="flex overflow-hidden rounded-lg bg-[#171a22] lg:flex-col">
         {statusTabs.map((tab) => (
           <button
@@ -56,7 +56,7 @@ export function TournamentsSidebar({
         ))}
       </div>
 
-      <div className="mt-1 px-1 text-sm text-zinc-400 lg:mt-2">Фильтры</div>
+      <div className="mt-1 px-1 text-sm text-zinc-200 lg:mt-2">Фильтры</div>
 
       <div className="relative z-10 grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-3">
         <FilterSelect

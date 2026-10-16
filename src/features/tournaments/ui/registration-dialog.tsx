@@ -23,9 +23,10 @@ export function RegistrationDialog({
   onOpenChange: (open: boolean) => void
   onRegistered: () => void
 }) {
+  const paidEntry = tournament.reward !== 'Бонусы'
   const schema = useMemo(
-    () => createRegistrationSchema(tournament.mode),
-    [tournament.mode],
+    () => createRegistrationSchema(tournament.mode, paidEntry),
+    [tournament.mode, paidEntry],
   )
   const rosterSize = getRosterSize(tournament.mode)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -59,7 +60,7 @@ export function RegistrationDialog({
         teamName: values.teamName,
         players: values.players,
         phone: values.phone,
-        paid: values.paid,
+        paid: paidEntry ? values.paid : false,
       })
       onRegistered()
       onOpenChange(false)
@@ -178,20 +179,22 @@ export function RegistrationDialog({
               />
             </Field>
 
-            <div>
-              <label className="flex items-start gap-3 text-sm">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 size-4 accent-[#e24a1b]"
-                  aria-invalid={errors.paid ? true : undefined}
-                  {...register('paid')}
-                />
-                <span>Подтверждаю, что участие платное</span>
-              </label>
-              {errors.paid ? (
-                <p className="mt-1 text-xs text-red-400">{errors.paid.message}</p>
-              ) : null}
-            </div>
+            {paidEntry ? (
+              <div>
+                <label className="flex items-start gap-3 text-sm">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 size-4 accent-[#e24a1b]"
+                    aria-invalid={errors.paid ? true : undefined}
+                    {...register('paid')}
+                  />
+                  <span>Подтверждаю, что участие платное</span>
+                </label>
+                {errors.paid ? (
+                  <p className="mt-1 text-xs text-red-400">{errors.paid.message}</p>
+                ) : null}
+              </div>
+            ) : null}
 
             {submitError ? (
               <p className="text-xs text-red-400">{submitError}</p>

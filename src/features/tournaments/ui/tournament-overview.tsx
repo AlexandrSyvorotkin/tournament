@@ -3,20 +3,15 @@ import { cn } from '@/shared/lib/utils'
 import {
   isTournamentPast,
   type Tournament,
-  type TournamentMode,
 } from '@/features/tournaments/model/tournaments'
 import { RegistrationDialog } from './registration-dialog'
 
-const modeText: Record<TournamentMode, string> = {
-  '1v1': 'Игроки выступают по одному и встречаются в дуэлях.',
-  '2v2': 'В матче играют команды из двух участников.',
-  '5v5': 'В матче играют команды из пяти участников.',
-}
 
 export function TournamentOverview({ tournament }: { tournament: Tournament }) {
   const [joined, setJoined] = useState(false)
   const [registrationOpen, setRegistrationOpen] = useState(false)
   const closed = isTournamentPast(tournament.start)
+
 
   return (
     <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -31,25 +26,24 @@ export function TournamentOverview({ tournament }: { tournament: Tournament }) {
           />
         </section>
 
-        <section className="rounded-xl bg-[#171a22] px-5 py-4">
-          <h2 className="text-sm font-medium text-zinc-400">О турнире</h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-100">
-            {tournament.name}. Старт — {tournament.start}. Призовой фонд —{' '}
-            {tournament.prize}.
+        <section className="rounded-xl bg-[#171a22] px-5 py-4 shadow-[0_10px_28px_rgba(0,0,0,0.5)] ring-1 ring-black/40">
+          <h2 className="text-sm font-medium text-zinc-300">О турнире</h2>
+          <p className="mt-2 text-sm leading-6 whitespace-pre-wrap text-zinc-100">
+            {tournament.description}
           </p>
         </section>
 
-        <section className="rounded-xl bg-[#171a22] px-5 py-4">
-          <h2 className="text-sm font-medium text-zinc-400">Формат</h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-100">
-            {modeText[tournament.mode]}
+        <section className="rounded-xl bg-[#171a22] px-5 py-4 shadow-[0_10px_28px_rgba(0,0,0,0.5)] ring-1 ring-black/40">
+          <h2 className="text-sm font-medium text-zinc-300">Формат</h2>
+          <p className="mt-2 text-sm leading-6 whitespace-pre-wrap text-zinc-100">
+            {tournament.format}
           </p>
         </section>
       </div>
 
-      <aside className="flex h-fit flex-col gap-3 rounded-xl bg-[#171a22] p-5">
+      <aside className="flex h-fit flex-col gap-3 rounded-xl bg-[#171a22] p-5 shadow-[0_10px_28px_rgba(0,0,0,0.5)] ring-1 ring-black/40">
         <div>
-          <div className="text-[11px] text-zinc-500">Призовой фонд</div>
+          <div className="text-[11px] text-zinc-400">Призовой фонд</div>
           <div className="mt-1 text-xl font-semibold break-words sm:text-2xl">
             {tournament.prize}
           </div>
@@ -106,8 +100,13 @@ function Fact({
   className?: string
 }) {
   return (
-    <div className={cn('rounded-xl bg-[#171a22] px-5 py-4', className)}>
-      <div className="text-[11px] text-zinc-500">{label}</div>
+    <div
+      className={cn(
+        'rounded-xl bg-[#171a22] px-5 py-4 shadow-[0_10px_28px_rgba(0,0,0,0.5)] ring-1 ring-black/40',
+        className,
+      )}
+    >
+      <div className="text-[11px] text-zinc-400">{label}</div>
       <div className="mt-1 text-sm">{value}</div>
     </div>
   )

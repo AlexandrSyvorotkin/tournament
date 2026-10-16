@@ -33,7 +33,7 @@ function rosterError(size: number) {
   return `Укажите ${size} имён участников через запятую`
 }
 
-export function createRegistrationSchema(mode: TournamentMode) {
+export function createRegistrationSchema(mode: TournamentMode, paid: boolean) {
   const size = rosterSize[mode]
 
   return z.object({
@@ -63,9 +63,9 @@ export function createRegistrationSchema(mode: TournamentMode) {
       .trim()
       .min(1, 'Укажите номер телефона для связи')
       .refine(isContactPhone, 'Укажите корректный номер телефона'),
-    paid: z
-      .boolean()
-      .refine((value) => value, 'Подтвердите, что участие платное'),
+    paid: paid
+      ? z.boolean().refine((value) => value, 'Подтвердите, что участие платное')
+      : z.boolean(),
   })
 }
 
